@@ -2,16 +2,17 @@
 
 provider "aws" {
   region = var.aws_region
+  profile = "lb-aws-admin"
 }
 
 module "acm" {
-  source      = "./modules/acm"
+  source      = "./modules/aws_acm"
   domain_name = "lb-aws-labs.link"
   zone_id     = var.zone_id
 }
 
 module "alb" {
-  source     = "./modules/alb"
+  source     = "./modules/aws_alb"
   subnet_ids = var.subnet_ids
   vpc_id     = var.vpc_id
   alb_sg_id  = aws_security_group.alb_sg.id
@@ -84,14 +85,14 @@ resource "aws_instance" "web" {
     Name = "WebServer"
   }
 }
-resource "aws_route53_record" "alb_dns" {
-  zone_id = var.zone_id
-  name    = "lb-aws-labs.link"
-  type    = "A"
 
+resource "aws_route53_record" "alb_dns" {
+  name    = module.alb.alb_dns_name
+  type    = "A"
+  zone_id = var.zone_id
   alias {
-    name                   = module.alb.dns_name
-    zone_id                = module.alb.zone_id
+    name                   = module.alb.alb_dns_name
+    zone_id                = var.zone_id
     evaluate_target_health = true
   }
 }
