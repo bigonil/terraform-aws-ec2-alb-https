@@ -1,10 +1,10 @@
 # Root main.tf (orchestrator)
 terraform {
   cloud {
-    hostname = "app.terraform.io"
+    hostname     = "app.terraform.io"
     organization = "LB-GlobexInfraOps"
     workspaces {
-      name = "terraform-aws-ec2-alb-https"
+      name    = "terraform-aws-ec2-alb-https"
       project = "learn_terraform_tutorials"
     }
   }
@@ -95,13 +95,16 @@ resource "aws_instance" "web" {
   }
 }
 
+
+
 resource "aws_route53_record" "alb_dns" {
-  name    = module.alb.alb_dns_name
+  name    = "www"
   type    = "A"
-  zone_id = var.zone_id
+  zone_id = module.alb.alb_zone_id
+
   alias {
     name                   = module.alb.alb_dns_name
-    zone_id                = var.zone_id
+    zone_id                = module.alb.alb_zone_id
     evaluate_target_health = true
   }
 }
