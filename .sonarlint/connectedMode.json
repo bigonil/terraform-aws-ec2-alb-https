@@ -1,0 +1,5 @@
+{
+    "sonarCloudOrganization": "bigonil",
+    "projectKey": "bigonil_terraform-aws-ec2-alb-https",
+    "region": "EU"
+}
