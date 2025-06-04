@@ -22,7 +22,3 @@ variable "public_key_path" {
   description = "Percorso assoluto del file della chiave pubblica SSH"
   type        = string
 }
-variable "domain_name" {
-  description = "Nome di dominio per il certificato ACM"
-  type        = string
-}
