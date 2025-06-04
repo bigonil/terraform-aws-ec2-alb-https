@@ -1,4 +1,14 @@
 # Root main.tf (orchestrator)
+terraform {
+  cloud {
+    hostname = "app.terraform.io"
+    organization = "LB-GlobexInfraOps"
+    workspaces {
+      name = "terraform-aws-ec2-alb-https"
+      project = "learn_terraform_tutorials"
+    }
+  }
+}
 
 provider "aws" {
   region = var.aws_region
