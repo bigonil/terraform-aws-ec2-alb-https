@@ -18,3 +18,24 @@ This repository provides a complete Terraform setup to deploy a secure web serve
 ---
 
 ## 📁 Project Structure
+
+terraform-aws-ec2-alb-https/ ├── main.tf ├── variables.tf ├── output.tf ├── terraform.tfvars ├── user_data.sh ├── modules/ │ ├── alb/ │ └── acm/ └── README.md
+
+
+---
+
+## ☁️ Cloud Integration
+
+Per abilitare l'integrazione cloud, aggiungi il seguente blocco di configurazione a uno qualsiasi dei tuoi file `.tf` nella directory dove esegui Terraform:
+
+````hcl
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+  required_version = ">= 1.3.0"
+}
+

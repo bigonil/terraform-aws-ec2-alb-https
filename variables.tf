@@ -19,6 +19,6 @@ variable "zone_id" {
 }
 
 variable "public_key_path" {
-  type    = string
-  default = "~/.ssh/id_rsa.pub"
+  description = "Percorso assoluto del file della chiave pubblica SSH"
+  type        = string
 }

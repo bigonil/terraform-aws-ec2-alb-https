@@ -50,6 +50,28 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_lb_listener_rule" "redirect_to_domain" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 1
+
+  action {
+    type = "redirect"
+    redirect {
+      protocol = "HTTPS"
+      port     = "443"
+      host     = "www.lb-aws-labs.link"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["web-alb-*.elb.amazonaws.com"]
+    }
+  }
+}
+
+
 resource "aws_lb_target_group_attachment" "web_instance" {
   target_group_arn = aws_lb_target_group.web_tg.arn
   target_id        = var.ec2_id

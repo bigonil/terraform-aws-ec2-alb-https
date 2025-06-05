@@ -1,14 +1,24 @@
 # Root main.tf (orchestrator)
+terraform {
+  cloud {
+    hostname     = "app.terraform.io"
+    organization = "LB-GlobexInfraOps"
+    workspaces {
+      name    = "terraform-aws-ec2-alb-https"
+      project = "learn_terraform_tutorials"
+    }
+  }
+}
 
 provider "aws" {
   region = var.aws_region
-  profile = "lb-aws-admin"
 }
 
-module "acm" {
-  source      = "./modules/aws_acm"
-  domain_name = "lb-aws-labs.link"
-  zone_id     = var.zone_id
+# Cerca certificato SSL già importato in ACM
+data "aws_acm_certificate" "imported" {
+  domain      = "www.lb-aws-labs.link"
+  statuses    = ["ISSUED"]
+  most_recent = true
 }
 
 module "alb" {
@@ -16,7 +26,7 @@ module "alb" {
   subnet_ids = var.subnet_ids
   vpc_id     = var.vpc_id
   alb_sg_id  = aws_security_group.alb_sg.id
-  cert_arn   = module.acm.cert_arn
+  cert_arn   = data.aws_acm_certificate.imported.arn
   ec2_id     = aws_instance.web.id
 }
 
@@ -87,12 +97,13 @@ resource "aws_instance" "web" {
 }
 
 resource "aws_route53_record" "alb_dns" {
-  name    = module.alb.alb_dns_name
+  name    = "www.lb-aws-labs.link"
   type    = "A"
   zone_id = var.zone_id
+
   alias {
     name                   = module.alb.alb_dns_name
-    zone_id                = var.zone_id
+    zone_id                = module.alb.alb_zone_id
     evaluate_target_health = true
   }
 }
