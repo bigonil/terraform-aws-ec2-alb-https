@@ -98,13 +98,14 @@ resource "aws_instance" "web" {
 
 
 resource "aws_route53_record" "alb_dns" {
-  name    = "www"
+  name    = "www.lb-aws-labs.link"   # completed with your domain name
+  # Example: www.lb-aws-labs.linkS
   type    = "A"
-  zone_id = module.alb.alb_zone_id
+  zone_id = var.zone_id              # Hosted Zone ID di lb-aws-labs.link
 
   alias {
-    name                   = module.alb.alb_dns_name
-    zone_id                = module.alb.alb_zone_id
+    name                   = module.alb.alb_dns_name   # es: web-alb-xxxx.elb.amazonaws.com
+    zone_id                = module.alb.alb_zone_id    # provisioned by ALB
     evaluate_target_health = true
   }
 }
